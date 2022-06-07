@@ -29,49 +29,85 @@ namespace ShoppingCartCMC.Server.Shared.Product
 
 
         /// <summary>
-        /// get all products with specific currency, product prices are calcuated based on market rates
+        /// get all products by ccyCode, product prices are calcuated based on market rates
         /// </summary>
         /// <param name="ccyCode">product currency code</param>
         /// <returns>a list of Product</returns>
-        public IEnumerable<ShoppingProduct> GetAll(string ccyCode)
+        public async Task<IEnumerable<ShoppingProduct>> GetAll(string ccyCode)
         {
-            //PW: get from mock data source
-            List<ShoppingProduct> productsInAud = new List<ShoppingProduct>(MockData.MockProductsInBaseCcy); //PW: must clone data, otherwise it will change MockData at next call.
-            productsInAud.ForEach(eachInAud =>
+            try
             {
-                if (eachInAud.Currency != ccyCode)
-                {
-                    decimal directRate = this._forexEngineRepository.GetDirectRate(ShippingRule.CartBaseCcy + ccyCode);
-                    eachInAud.ProductPrice = Math.Round(eachInAud.ProductPrice / directRate, 0); 
-                }
-            });
+                /** *
+                * Patrick: [todo in future].
+                * PW: await CPU-bound work here...
+                */
 
-            return productsInAud;
+                //PW: get from mock data source
+                List<ShoppingProduct> productsInAud = new List<ShoppingProduct>(MockData.MockProductsInBaseCcy); //PW: must clone data, otherwise it will change MockData at next call.
+                productsInAud.ForEach(async eachInAud =>
+                {
+                    if (eachInAud.Currency != ccyCode)
+                    {
+                        try
+                        {
+                            decimal indirectRate = await this._forexEngineRepository.GetIndirectRate(ShippingRule.CartBaseCcy + ccyCode);
+                            eachInAud.ProductPrice = Math.Round(eachInAud.ProductPrice * indirectRate, 0); //PW: modify price property
+                            eachInAud.Currency = ccyCode; //PW: modify currency property
+                        }
+                        catch (Exception ex)
+                        {
+                            //PW: if no product found by ccyCode, return products by base ccy (AUD)
+                            System.Diagnostics.Debug.WriteLine(ex);
+                        }                        
+                    }
+                });
+
+                return productsInAud; //PW: may or maynot in AUD, depends on request ccyCode.
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
         }
 
 
         /// <summary>
-        /// Get a product by key
+        /// Get a product by key and ccyCode
         /// </summary>
         /// <param name="key">product key</param>
         /// <param name="ccyCode">product currency code</param>
         /// <returns>a product with key matched</returns>
-        public ShoppingProduct Get(string key, string ccyCode)
+        public async Task<ShoppingProduct> Get(string key, string ccyCode)
         {
-            //PW: get from mock data source
-            List<ShoppingProduct> products = new List<ShoppingProduct>(MockData.MockProductsInBaseCcy); //PW: must clone data, otherwise it will change MockData at next call.
-            var foundInAud = products.Find(p => p.Productkey == key);
-
-            if (foundInAud != null)
+            try
             {
-                if (foundInAud.Currency != ccyCode)
+                /** *
+                * Patrick: [todo in future].
+                * PW: await CPU-bound work here...
+                */
+
+                //PW: get from mock data source
+                List<ShoppingProduct> products = new List<ShoppingProduct>(MockData.MockProductsInBaseCcy); //PW: must clone data, otherwise it will change MockData at next call.
+                var foundInAud = products.Find(p => p.Productkey == key);
+                              
+                if (foundInAud != null)
                 {
-                    decimal directRate = this._forexEngineRepository.GetDirectRate(ShippingRule.CartBaseCcy + ccyCode);
-                    foundInAud.ProductPrice = Math.Round(foundInAud.ProductPrice / directRate, 0);
+                    if (foundInAud.Currency != ccyCode)
+                    {
+                        decimal indirectRate = await this._forexEngineRepository.GetIndirectRate(ShippingRule.CartBaseCcy + ccyCode);
+                        foundInAud.ProductPrice = Math.Round(foundInAud.ProductPrice * indirectRate, 0); //PW: modify price property
+                        foundInAud.Currency = ccyCode; //PW: modify currency property
+                    }
                 }
+
+                return foundInAud; //PW: may or maynot in AUD, depends on request ccyCode.
             }
-                
-            return foundInAud;
+            catch(Exception ex)
+            {
+
+                return null;
+            }
         }
 
         

@@ -1,44 +1,40 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using ShoppingCartCMC.Server.Shared.Product;
+using ShoppingCartCMC.Server.Shared.Billing;
+using ShoppingCartCMC.Server.Shared.MarketData;
+using ShoppingCartCMC.Server.Shared.Shipping;
+using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ShoppingCartCMC.WebApi.Controllers
 {
+    //[Authorize(AuthenticationSchemes = "Bearer")]  //PW: further development
     [Route("api/[controller]")]
     [ApiController]
     public class ShippingController : ControllerBase
     {
-        // GET: api/<ShippingController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly iProductRepository _productRepository;
+        private readonly iBillingRepository _billingRepository;
+        private readonly iForexEngineRepository _forexEngineRepository;
+        private readonly iShippingRepository _shippingRepository;
+
+        public ShippingController(iProductRepository productRepository, iBillingRepository billingRepository, iForexEngineRepository forexEngineRepository, iShippingRepository shippingRepository)
         {
-            return new string[] { "value1", "value2" };
+            _productRepository = productRepository;
+            _billingRepository = billingRepository;
+            _forexEngineRepository = forexEngineRepository;
+            _shippingRepository = shippingRepository;
         }
+
 
         // GET api/<ShippingController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{cartSumPrice}/{ccyCode}")]
+        public async Task<decimal> Get(decimal cartSumPrice, string ccyCode)
         {
-            return "value";
+            return await _shippingRepository.GetShippingFee(cartSumPrice, ccyCode);
         }
 
-        // POST api/<ShippingController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<ShippingController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<ShippingController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

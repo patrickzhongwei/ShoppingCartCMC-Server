@@ -32,21 +32,26 @@ namespace ShoppingCartCMC.Server.Shared.Shipping
         /// <param name="cartSumPrice">shopping cart sum price</param>
         /// <param name="ccyCode">currency code</param>
         /// <returns>amount of shipping fee</returns>
-        public decimal GetShippingFee(decimal cartSumPrice, string ccyCode)
+        public async Task<decimal> GetShippingFee(decimal cartSumPrice, string ccyCode)
         {
             decimal shippingRate1 = 10M;
             decimal shippingRate2 = 20M;
             decimal thresholdInBaseCcy = 50M;
             decimal thresholdInCcyCode = thresholdInBaseCcy;
 
+            /** *
+            * Patrick: [todo in future].
+            * PW: await CPU-bound work here...
+            */
+
             //PW: calulate by different ccyCode
             if (ccyCode != ShippingRule.CartBaseCcy)
             {
-                decimal directRate = this._forexEngineRepository.GetDirectRate(ShippingRule.CartBaseCcy + ccyCode);
+                decimal indirectRate = await this._forexEngineRepository.GetIndirectRate(ShippingRule.CartBaseCcy + ccyCode);
 
-                shippingRate1 = Math.Round(shippingRate1 / directRate, 0);
-                shippingRate2 = Math.Round(shippingRate2 / directRate, 0);
-                thresholdInCcyCode = Math.Round(thresholdInBaseCcy / directRate, 0);
+                shippingRate1 = Math.Round(shippingRate1 * indirectRate, 0);
+                shippingRate2 = Math.Round(shippingRate2 * indirectRate, 0);
+                thresholdInCcyCode = Math.Round(thresholdInBaseCcy * indirectRate, 0);
             }
 
             //PW: compare with threshold

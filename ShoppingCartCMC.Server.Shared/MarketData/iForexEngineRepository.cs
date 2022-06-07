@@ -13,6 +13,6 @@ namespace ShoppingCartCMC.Server.Shared.MarketData
         /// </summary>
         /// <param name="ccyPair">currency pair</param>
         /// <returns>direct rate </returns>
-        decimal GetDirectRate(string ccyPair);
+        Task<decimal> GetIndirectRate(string ccyPair);
     }
 }

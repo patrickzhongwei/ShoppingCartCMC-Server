@@ -11,5 +11,11 @@ namespace ShoppingCartCMC.Shared
     /// </summary>
     public class User
     {
+        public string? UserName { get; set; }
+
+        public string? EmailId { get; set; } 
+        
+        //PW: todo...
+
     }
 }

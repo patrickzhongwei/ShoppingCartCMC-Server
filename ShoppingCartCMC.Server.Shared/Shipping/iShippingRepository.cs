@@ -15,6 +15,6 @@ namespace ShoppingCartCMC.Server.Shared.Shipping
         /// <param name="cartSumPrice">shopping cart sum price</param>
         /// <param name="ccyCode">currency code</param>
         /// <returns>amount of shipping fee</returns>
-        decimal GetShippingFee(decimal cartSumPrice, string ccyCode);
+        Task<decimal> GetShippingFee(decimal cartSumPrice, string ccyCode);
     }
 }

@@ -14,7 +14,7 @@ namespace ShoppingCartCMC.Server.Shared.Product
         /// </summary>
         /// <param name="ccyCode">product currency code</param>
         /// <returns>a list of Product</returns>
-        IEnumerable<ShoppingProduct> GetAll(string ccyCode);
+        Task<IEnumerable<ShoppingProduct>> GetAll(string ccyCode);
 
 
         /// <summary>
@@ -23,6 +23,6 @@ namespace ShoppingCartCMC.Server.Shared.Product
         /// <param name="key">product key</param>
         /// <param name="ccyCode">product currency code</param>
         /// <returns>a product with key matched</returns>
-        ShoppingProduct Get(string key, string ccyCode);
+        Task<ShoppingProduct> Get(string key, string ccyCode);
     }
 }
