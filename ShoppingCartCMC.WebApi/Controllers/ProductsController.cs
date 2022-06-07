@@ -16,13 +16,13 @@ namespace ShoppingCartCMC.WebApi.Controllers
     //[Authorize(AuthenticationSchemes = "Bearer")]  //PW: further development
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductsController : ControllerBase
     {
         private readonly iProductRepository _productRepository;
         private readonly iBillingRepository _billingRepository;
         private readonly iForexEngineRepository _forexEngineRepository;
         private readonly iShippingRepository _shippingRepository;
-        public ProductController(iProductRepository productRepository, iBillingRepository billingRepository, iForexEngineRepository forexEngineRepository, iShippingRepository shippingRepository)
+        public ProductsController(iProductRepository productRepository, iBillingRepository billingRepository, iForexEngineRepository forexEngineRepository, iShippingRepository shippingRepository)
         {
             _productRepository = productRepository;
             _billingRepository = billingRepository;
@@ -30,19 +30,19 @@ namespace ShoppingCartCMC.WebApi.Controllers
             _shippingRepository = shippingRepository;
         }
 
+
         /// <summary>
-        /// GET api/<ProductController>/
+        /// GET api/<ProductsController>/
         /// </summary>
-        /// <param name="key">product key, e.g.,L1HnndxVc2-KaJ10Skc </param>
         /// <param name="ccyCode">ccy code, e.g.,AUD </param>
-        /// <returns>Product object JsonSerialized string</returns>
+        /// <returns>Product[] object JsonSerialized string</returns>
         [HttpGet()]
-        public async Task<string> Get(string key, string ccyCode = "AUD")
+        public async Task<string> Get(string ccyCode = "AUD")
         {
-            var product = await _productRepository.Get(key, ccyCode);
+            var products = await _productRepository.GetAll(ccyCode);
 
             string jsonString = JsonConvert.SerializeObject(
-            product,
+            products,
             Formatting.None,
             new JsonSerializerSettings()
             {

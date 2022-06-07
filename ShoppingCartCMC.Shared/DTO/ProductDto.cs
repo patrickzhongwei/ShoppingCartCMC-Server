@@ -52,5 +52,25 @@ namespace ShoppingCartCMC.Shared.DTO
 
         [JsonProperty(PropertyName = "e")]
         public string Currency { get; set; } //PW: currency of product price
+
+        public ProductDto(
+            string productkey, int productId, string productName, string productCategory, decimal productPrice, string productDescription, string productImageUrl, long productAdded, int productQuatity, decimal ratings, bool favourite, string productSeller, string currency)
+        {
+            Productkey = productkey;
+            ProductId = productId;
+            ProductName = productName;
+            ProductCategory = productCategory;
+            ProductPrice = productPrice;
+            ProductDescription = productDescription;
+            ProductImageUrl = productImageUrl;
+            ProductAdded = productAdded;
+            ProductQuatity = productQuatity;
+            Ratings = ratings;
+            Favourite = favourite;
+            ProductSeller = productSeller;
+            Currency = currency;
+        }
+        
+
     }
 }

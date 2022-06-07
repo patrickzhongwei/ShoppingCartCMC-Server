@@ -1,9 +1,9 @@
-﻿using System;
+﻿using ShoppingCartCMC.Shared.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ShoppingProduct = ShoppingCartCMC.Shared.Product;
 
 namespace ShoppingCartCMC.Server.Shared.Product
 {
@@ -14,7 +14,7 @@ namespace ShoppingCartCMC.Server.Shared.Product
         /// </summary>
         /// <param name="ccyCode">product currency code</param>
         /// <returns>a list of Product</returns>
-        Task<IEnumerable<ShoppingProduct>> GetAll(string ccyCode);
+        Task<IEnumerable<ProductDto>> GetAll(string ccyCode);
 
 
         /// <summary>
@@ -23,6 +23,6 @@ namespace ShoppingCartCMC.Server.Shared.Product
         /// <param name="key">product key</param>
         /// <param name="ccyCode">product currency code</param>
         /// <returns>a product with key matched</returns>
-        Task<ShoppingProduct> Get(string key, string ccyCode);
+        Task<ProductDto> Get(string key, string ccyCode);
     }
 }

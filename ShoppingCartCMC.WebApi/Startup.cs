@@ -80,16 +80,27 @@ namespace ShoppingCartCMC.WebApi
             * PW: define CORS policy
             * ************************************************************
             */
-            //services.AddCors(o => o.AddPolicy("MyCorsPolicy", builder =>
-            //{
-            //    var corsAllowOrigins = Configuration.GetSection("CorsAllowOrigins").Get<string[]>();
-            //    builder.WithOrigins(corsAllowOrigins)
-            //           .SetIsOriginAllowedToAllowWildcardSubdomains()
-            //           .AllowAnyMethod()
-            //           .AllowAnyHeader()
-            //           .AllowCredentials();
-            //}));
+            services.AddCors(o => o.AddPolicy("MyCorsPolicy", builder =>
+            {
+                /* Product setting */
+                //***************************************************************************************** */
+                //var corsAllowOrigins = Configuration.GetSection("CorsAllowOrigins").Get<string[]>();
+                //builder
+                //        .WithOrigins(corsAllowOrigins)
+                //       .SetIsOriginAllowedToAllowWildcardSubdomains()
+                //       .AllowAnyMethod()
+                //       .AllowAnyHeader()
+                //       .AllowCredentials();
+                //*************************************************************************************** */
 
+                /* development setting */
+                //*************************** */
+                builder
+                       .AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+                /*****************************/
+            }));
 
             /** **********************************************************
             * Patrick: [todo in future].

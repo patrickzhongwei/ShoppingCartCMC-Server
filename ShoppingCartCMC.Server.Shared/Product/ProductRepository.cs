@@ -2,11 +2,13 @@
 using ShoppingCartCMC.Server.Shared.BizRule;
 using ShoppingCartCMC.Server.Shared.MarketData;
 using ShoppingCartCMC.Shared;
+using ShoppingCartCMC.Shared.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ShoppingCartCMC.Shared.Factory;
 using ShoppingProduct = ShoppingCartCMC.Shared.Product; //PW: do it, otherwise compile confused
 
 namespace ShoppingCartCMC.Server.Shared.Product
@@ -29,11 +31,11 @@ namespace ShoppingCartCMC.Server.Shared.Product
 
 
         /// <summary>
-        /// get all products by ccyCode, product prices are calcuated based on market rates
+        /// get all products Dtos by ccyCode, product prices are calcuated based on market rates
         /// </summary>
         /// <param name="ccyCode">product currency code</param>
-        /// <returns>a list of Product</returns>
-        public async Task<IEnumerable<ShoppingProduct>> GetAll(string ccyCode)
+        /// <returns>a list of ProductDto</returns>
+        public async Task<IEnumerable<ProductDto>> GetAll(string ccyCode)
         {
             try
             {
@@ -62,7 +64,8 @@ namespace ShoppingCartCMC.Server.Shared.Product
                     }
                 });
 
-                return productsInAud; //PW: may or maynot in AUD, depends on request ccyCode.
+                var factory = new ProductFactory();
+                return factory.CreateDtoBatch(productsInAud.ToArray()); //PW: may or maynot in AUD, depends on request ccyCode.
             }
             catch (Exception ex)
             {
@@ -73,12 +76,12 @@ namespace ShoppingCartCMC.Server.Shared.Product
 
 
         /// <summary>
-        /// Get a product by key and ccyCode
+        /// Get a product Dto by key and ccyCode
         /// </summary>
         /// <param name="key">product key</param>
         /// <param name="ccyCode">product currency code</param>
-        /// <returns>a product with key matched</returns>
-        public async Task<ShoppingProduct> Get(string key, string ccyCode)
+        /// <returns>a product Dto matched</returns>
+        public async Task<ProductDto> Get(string key, string ccyCode)
         {
             try
             {
@@ -101,7 +104,8 @@ namespace ShoppingCartCMC.Server.Shared.Product
                     }
                 }
 
-                return foundInAud; //PW: may or maynot in AUD, depends on request ccyCode.
+                var factory = new ProductFactory();
+                return factory.CreateDto(foundInAud); //PW: may or maynot in AUD, depends on request ccyCode.
             }
             catch(Exception ex)
             {
