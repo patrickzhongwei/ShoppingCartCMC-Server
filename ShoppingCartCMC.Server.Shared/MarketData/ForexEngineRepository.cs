@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using ShoppingCartCMC.Server.Shared.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,23 +24,32 @@ namespace ShoppingCartCMC.Server.Shared.MarketData
 
 
         /// <summary>
-        /// Get market rate by ccyPair
+        /// Get indirect market rate by ccyPair, indirect means all currency pair must be started with domestic(base) currency, here AUD
         /// </summary>
         /// <param name="ccyPair">currency pair</param>
         /// <returns>direct rate </returns>
-        public decimal GetDirectRate(string ccyPair)
+        public async Task<decimal> GetIndirectRate(string ccyPair)
         {
+            /** *
+            * Patrick: [todo in future].
+            * PW: await CPU-bound work here...
+            */
+
             //PW: mock-up static rate            
             /** *
             * Patrick: [todo in future].
             * rates need update dailly
             */
             if (ccyPair == "AUDNZD")
-                return 0.92M;
+                return 1.11M;
             else if (ccyPair == "AUDUSD")
-                return 0.60M;
+                return 0.72M;
             else
-                return 1.0M;
+            {
+                var msg = "unsupported currency pair at GetDirectRate(...), " + ccyPair;
+                _logger.LogError(msg);
+                throw new CmcCartException(msg, ErrorCode.CCYPAIR_UNSUPPORT);
+            }
         }
     }
 }
