@@ -109,7 +109,7 @@ namespace ShoppingCartCMC.Server.Shared.Product
             }
             catch(Exception ex)
             {
-
+                //PW: logger ...
                 return null;
             }
         }

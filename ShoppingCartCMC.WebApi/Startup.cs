@@ -50,6 +50,8 @@ namespace ShoppingCartCMC.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
+
             //PW: add DI setting, using scoped.
             services.AddScoped<iBillingRepository, BillingRepository>();
             services.AddScoped<iForexEngineRepository, ForexEngineRepository>();

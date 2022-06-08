@@ -29,8 +29,13 @@ namespace ShoppingCartCMC.WebApi.Controllers
         }
 
 
-        // GET api/<ShippingController>/5
-        [HttpGet("{cartSumPrice}/{ccyCode}")]
+        /// <summary>
+        /// get shipping fee by cartSumPrice and ccyCode
+        /// </summary>
+        /// <param name="cartSumPrice">shopping card sum price</param>
+        /// <param name="ccyCode">ccy code</param>
+        /// <returns></returns>
+        [HttpGet()] //PW: don't go that way, or Angualr cannot handle it // [HttpGet("{cartSumPrice}/{ccyCode}")]
         public async Task<decimal> Get(decimal cartSumPrice, string ccyCode = "AUD")
         {
             return await _shippingRepository.GetShippingFee(cartSumPrice, ccyCode);

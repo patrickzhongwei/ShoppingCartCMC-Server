@@ -30,25 +30,33 @@ namespace ShoppingCartCMC.Server.Shared.MarketData
         /// <returns>direct rate </returns>
         public async Task<decimal> GetIndirectRate(string ccyPair)
         {
-            /** *
-            * Patrick: [todo in future].
-            * PW: await CPU-bound work here...
-            */
-
-            //PW: mock-up static rate            
-            /** *
-            * Patrick: [todo in future].
-            * rates need update dailly
-            */
-            if (ccyPair == "AUDNZD")
-                return 1.11M;
-            else if (ccyPair == "AUDUSD")
-                return 0.72M;
-            else
+            try
             {
-                var msg = "unsupported currency pair at GetDirectRate(...), " + ccyPair;
-                _logger.LogError(msg);
-                throw new CmcCartException(msg, ErrorCode.CCYPAIR_UNSUPPORT);
+                /** *
+                * Patrick: [todo in future].
+                * PW: await CPU-bound work here...
+                */
+
+                //PW: mock-up static rate            
+                /** *
+                * Patrick: [todo in future].
+                * rates need update dailly
+                */
+                if (ccyPair == "AUDNZD")
+                    return 1.11M;
+                else if (ccyPair == "AUDUSD")
+                    return 0.72M;
+                else
+                {
+                    var msg = "unsupported currency pair at GetDirectRate(...), " + ccyPair;
+                    _logger.LogError(msg);
+                    throw new CmcCartException(msg, ErrorCode.CCYPAIR_UNSUPPORT);
+                }
+            }
+            catch (Exception ex)
+            {
+                //PW: logger ...
+                return 0M;
             }
         }
     }
