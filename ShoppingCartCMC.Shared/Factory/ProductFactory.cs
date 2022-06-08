@@ -9,7 +9,7 @@ namespace ShoppingCartCMC.Shared.Factory
 {
     public class ProductFactory
     {
-        public ProductDto? CreateDto(Product product)
+        public iProductDto? CreateDto(iProduct product)
         {
             if (product == null)
                 return null;
@@ -31,9 +31,9 @@ namespace ShoppingCartCMC.Shared.Factory
         }
 
 
-        public ProductDto[] CreateDtoBatch(Product[] batch)
+        public iProductDto[] CreateDtoBatch(iProduct[] batch)
         {
-            List<ProductDto> dtos = new List<ProductDto>();
+            List<iProductDto> dtos = new List<iProductDto>();
 
             foreach (var product in batch)
             {

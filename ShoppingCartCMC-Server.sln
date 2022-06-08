@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingCartCMC.WebApi", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingCartCMC.Server.Shared", "ShoppingCartCMC.Server.Shared\ShoppingCartCMC.Server.Shared.csproj", "{D73A662F-21FA-41B0-A9D6-DB26E0AF3DCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingCartCMC.Shared", "ShoppingCartCMC.Shared\ShoppingCartCMC.Shared.csproj", "{F275BDFF-0529-4391-8EB8-8B81799B1FC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingCartCMC.Shared", "ShoppingCartCMC.Shared\ShoppingCartCMC.Shared.csproj", "{F275BDFF-0529-4391-8EB8-8B81799B1FC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingCartCMC.STS", "ShoppingCartCMC.STS\ShoppingCartCMC.STS.csproj", "{24797A39-6E6E-44F4-A975-A6279C4ADFBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingCartCMC.STS", "ShoppingCartCMC.STS\ShoppingCartCMC.STS.csproj", "{24797A39-6E6E-44F4-A975-A6279C4ADFBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingCartCMC.Test", "ShoppingCartCMC.Test\ShoppingCartCMC.Test.csproj", "{14426674-8ACD-4958-84CA-778B7239E1EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{24797A39-6E6E-44F4-A975-A6279C4ADFBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24797A39-6E6E-44F4-A975-A6279C4ADFBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24797A39-6E6E-44F4-A975-A6279C4ADFBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14426674-8ACD-4958-84CA-778B7239E1EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14426674-8ACD-4958-84CA-778B7239E1EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14426674-8ACD-4958-84CA-778B7239E1EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14426674-8ACD-4958-84CA-778B7239E1EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

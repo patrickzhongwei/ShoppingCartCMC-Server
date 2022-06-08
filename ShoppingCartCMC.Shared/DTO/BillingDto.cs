@@ -12,7 +12,7 @@ namespace ShoppingCartCMC.Shared.DTO
     /// 1- minified objects to reduce data size.
     /// 2- minification rule must be identical to client side BillingDto.
     /// </summary>
-    public class BillingDto
+    public class BillingDto : iBillingDto
     {
         [JsonProperty(PropertyName = "s")]
         public decimal SubTotal { get; set; } //PW: only sum of product price

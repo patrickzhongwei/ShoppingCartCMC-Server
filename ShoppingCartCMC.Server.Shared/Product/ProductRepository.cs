@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ShoppingCartCMC.Shared.Factory;
-using ShoppingProduct = ShoppingCartCMC.Shared.Product; //PW: do it, otherwise compile confused
+//using ShoppingCartCMC.Shared; //PW: do it, otherwise compile confused
 
 namespace ShoppingCartCMC.Server.Shared.Product
 {
@@ -35,7 +35,7 @@ namespace ShoppingCartCMC.Server.Shared.Product
         /// </summary>
         /// <param name="ccyCode">product currency code</param>
         /// <returns>a list of ProductDto</returns>
-        public async Task<IEnumerable<ProductDto>> GetAll(string ccyCode)
+        public async Task<IEnumerable<iProductDto>> GetAll(string ccyCode)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace ShoppingCartCMC.Server.Shared.Product
                 */
 
                 //PW: get from mock data source
-                List<ShoppingProduct> productsInAud = new List<ShoppingProduct>(MockData.MockProductsInBaseCcy); //PW: must clone data, otherwise it will change MockData at next call.
+                List<iProduct> productsInAud = new List<iProduct>(MockData.MockProductsInBaseCcy); //PW: must clone data, otherwise it will change MockData at next call.
                 productsInAud.ForEach(async eachInAud =>
                 {
                     if (eachInAud.Currency != ccyCode)
@@ -81,7 +81,7 @@ namespace ShoppingCartCMC.Server.Shared.Product
         /// <param name="key">product key</param>
         /// <param name="ccyCode">product currency code</param>
         /// <returns>a product Dto matched</returns>
-        public async Task<ProductDto> Get(string key, string ccyCode)
+        public async Task<iProductDto> Get(string key, string ccyCode)
         {
             try
             {
@@ -91,7 +91,7 @@ namespace ShoppingCartCMC.Server.Shared.Product
                 */
 
                 //PW: get from mock data source
-                List<ShoppingProduct> products = new List<ShoppingProduct>(MockData.MockProductsInBaseCcy); //PW: must clone data, otherwise it will change MockData at next call.
+                List<iProduct> products = new List<iProduct>(MockData.MockProductsInBaseCcy); //PW: must clone data, otherwise it will change MockData at next call.
                 var foundInAud = products.Find(p => p.Productkey == key);
                               
                 if (foundInAud != null)

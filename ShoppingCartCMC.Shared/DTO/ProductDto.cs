@@ -12,7 +12,7 @@ namespace ShoppingCartCMC.Shared.DTO
     /// 1- minified objects to reduce data size.
     /// 2- minification rule must be identical to client side ProductDto.
     /// </summary>
-    public class ProductDto
+    public class ProductDto : iProductDto
     {
         [JsonProperty(PropertyName = "p")]
         public string Productkey { get; set; } //PW: a random string like 'LXsQ2ImqAdLlHJFAwor'

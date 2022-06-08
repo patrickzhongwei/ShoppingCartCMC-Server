@@ -11,12 +11,12 @@ namespace ShoppingCartCMC.Shared
         /// <summary>
         /// A list of mock Product in base currency, base currency is defined at business rule, currently it is 'AUD'
         /// </summary>
-        public static List<Product> MockProductsInBaseCcy 
+        public static List<iProduct> MockProductsInBaseCcy 
         { 
             get
             {
                 string a = @"a";
-                List<Product> products = new List<Product>();
+                List<iProduct> products = new List<iProduct>();
                 products.AddRange(
                     new Product[]
                     {

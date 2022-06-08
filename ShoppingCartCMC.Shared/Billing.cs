@@ -9,7 +9,7 @@ namespace ShoppingCartCMC.Shared
     /// <summary>
     /// PW: Billing entity
     /// </summary>
-    public class Billing
+    public class Billing : iBilling
     {
         public decimal SubTotal { get; set; } //PW: only sum of product price
         public decimal ShippingFee { get; set; } //PW: shipping fee

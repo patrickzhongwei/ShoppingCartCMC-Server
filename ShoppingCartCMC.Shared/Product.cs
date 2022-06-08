@@ -9,7 +9,7 @@ namespace ShoppingCartCMC.Shared
     /// <summary>
     /// PW: Product enity
     /// </summary>
-    public class Product
+    public class Product : iProduct
     {
         public string  Productkey { get; set; } //PW: a random string like 'LXsQ2ImqAdLlHJFAwor'
         public int     ProductId { get; set; } //PW: product Id, like '10005'
