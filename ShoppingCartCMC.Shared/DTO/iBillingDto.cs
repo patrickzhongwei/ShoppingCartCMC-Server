@@ -14,23 +14,23 @@ namespace ShoppingCartCMC.Shared.DTO
 
         decimal Total { get; set; } //PW: sum of product price + shipping fee
 
-        string FirstName { get; set; } //PW: customer's first name
+        string? FirstName { get; set; } //PW: customer's first name
 
 
-        string LastName { get; set; } //PW: customer's last name
+        string? LastName { get; set; } //PW: customer's last name
 
-        string EmailId { get; set; } //PW: customer's email id
+        string? EmailId { get; set; } //PW: customer's email id
 
-        string Address1 { get; set; } //PW: customer's address1
+        string? Address1 { get; set; } //PW: customer's address1
 
-        string Address2 { get; set; }//PW: customer's address2
+        string? Address2 { get; set; }//PW: customer's address2
 
-        string Country { get; set; } //PW: customer's country
+        string? Country { get; set; } //PW: customer's country
 
-        string State { get; set; } //PW: customer's state if any
+        string? State { get; set; } //PW: customer's state if any
 
-        string Zip { get; set; } //PW: customer's post code
+        string? Zip { get; set; } //PW: customer's post code
 
-        Product[] Products { get; set; }
+        ProductDto[] ProductDtos { get; set; }
     }
 }
