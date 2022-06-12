@@ -17,6 +17,10 @@ This is a startup ASP.NET CORE (cross-platform) project template with security t
 
  Clone the Git Repository and edit with Visual Studio 2022. Double-click `ShoppingCartCMC-Server.sln` will open up a solution. Check the output window or status bar to know that the package/dependencies restore process is complete before launching your program for the first time.
 
+## Database setup and configuration 
+Find out `ShoppingCartCMC.Server.Shared\DB\ShoppingCartCmc.Identity.sql` and `ShoppingCartCmc.Trading.sql`, execute those two script files at Microsoft SQL Management Studio to create database.
+Change connection string accordingly to point to right database at `appsettings.json`, for both project `ShoppingCartCMC.WebApi` and `ShoppingCartCMC.STS`
+
 ## Documentation
 
 * `ShoppingCartCMC.WebApi`: RESTful API project
