@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using ShoppingCartCMC.Server.Shared.Common;
+using ShoppingCartCMC.Server.Shared.DB.Trading;
 using ShoppingCartCMC.Shared.DTO;
+using shortid;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,14 +14,16 @@ namespace ShoppingCartCMC.Server.Shared.Billing
     public class BillingRepository : iBillingRepository
     {
         private readonly ILogger<BillingRepository> _logger;
+        private readonly ShoppingCartCmcTradingContext _tradingContext;
 
         /// <summary>
         /// Dependency injection
         /// </summary>
         /// <param name="logger"></param>
-        public BillingRepository(ILogger<BillingRepository> logger)
+        public BillingRepository(ILogger<BillingRepository> logger, ShoppingCartCmcTradingContext tradingContext)
         {
             _logger = logger;
+            _tradingContext = tradingContext;            
         }
 
         
@@ -34,9 +38,42 @@ namespace ShoppingCartCMC.Server.Shared.Billing
             * Patrick: [todo in future].
             * validae billing first, persist into db, generate billing receipt 
             */
-
             ValidateOrder(billingDto);
-            return 12345; //PW: dummy order number
+
+            try
+            {
+                string key = ShortId.Generate(); 
+
+                _tradingContext.Billings.Add(new DB.Trading.Billing
+                {
+                    Key = key,
+                    Subtotal = billingDto.SubTotal,
+                    ShippingFee = billingDto.ShippingFee,
+                    Total = billingDto.Total,
+                    FirstName = billingDto.FirstName,
+                    LastName = billingDto.LastName,
+                    EmailId = billingDto.EmailId,
+                    Address1 = billingDto.Address1,
+                    Address2 = billingDto.Address2,
+                    Country = billingDto.Country,
+                    State = billingDto.State,
+                    Zip = billingDto.Zip
+                });
+
+                await _tradingContext.SaveChangesAsync();
+
+                var orderNumber = _tradingContext.Billings.First(t => t.Key == key).Id;
+
+                return orderNumber;
+                
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PlaceOrder(...) throws exception: " + ex);
+                return ErrorCode.GENERAL_ERROR;
+            }
+
+            //return 12345; //PW: dummy order number
         }
 
 
