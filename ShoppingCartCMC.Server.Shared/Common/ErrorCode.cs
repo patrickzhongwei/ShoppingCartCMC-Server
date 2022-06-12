@@ -23,7 +23,7 @@ namespace ShoppingCartCMC.Server.Shared.Common
 
         public const int CARTTOTAL_WRONG = -1005; //PW: detect wrong shopping cart total when validate order being placed
 
-        public const int GENERAL_ERROR_ = -1;       //unknown 	
+        public const int GENERAL_ERROR = -1;       //unknown 	
 
     }
 }

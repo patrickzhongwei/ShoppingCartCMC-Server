@@ -1,0 +1,129 @@
+﻿@using ShoppingCartCMC.STS.Resources
+@using System.Collections.Generic
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.Configuration
+@using ShoppingCartCMC.Server.Shared.Identity
+@model  ShoppingCartCMC.STS.Models.AccountViewModels.LoginViewModel
+@inject LocService SharedLocalizer
+@inject Microsoft.AspNetCore.Identity.SignInManager<MyIdentityUser> SignInManager
+@inject IConfiguration Config
+
+@{
+    string url_DealingHome      = Config.GetValue<string>("AppSetting:Url_DealingHome");
+    string url_ForgotPassword   = Config.GetValue<string>("AppSetting:Url_ForgotPassword");
+    string url_Register         = Config.GetValue<string>("AppSetting:Url_Register");
+}
+
+@{
+    ViewData["Title"] = @SharedLocalizer.GetLocalizedHtmlString("LOG_IN");
+}
+
+<h2>@ViewData["Title"]</h2>
+<div class="row">
+    <div class="col-md-8">
+        <section>
+            <form autocomplete="off" asp-controller="Account" asp-action="Login" asp-route-returnurl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Email" class="col-md-2 control-label">@SharedLocalizer.GetLocalizedHtmlString("EMAIL")</label>
+                    <div class="col-md-10">
+                        <input asp-for="Email" class="form-control" id="txtEmail" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="col-md-2 control-label">@SharedLocalizer.GetLocalizedHtmlString("PASSWORD")</label>
+                    <div class="col-md-10">
+                        <input asp-for="Password" class="form-control" type="password" id="txtPassword" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                </div>
+
+                @*PW: never remember login and password*@
+                <div class="form-group" style="display:none">
+                    <div class="col-md-offset-2 col-md-10">
+                        <div class="checkbox">
+                            <label asp-for="RememberLogin">
+                                <input asp-for="RememberLogin" />
+                                @SharedLocalizer.GetLocalizedHtmlString("REMEMBER_ME")
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        @if ((bool)ViewData["IsInternalRequest"])
+                        {
+                            <button type="submit" class="btn btn-primary" onclick="saveLoginFieldsInWpf()"><i class="fas fa-unlock gh-offset"></i>@SharedLocalizer.GetLocalizedHtmlString("ACCOUNT_LOGIN")</button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-unlock gh-offset"></i>@SharedLocalizer.GetLocalizedHtmlString("ACCOUNT_LOGIN")</button>
+                        }
+                    </div>
+                </div>
+
+
+               @* <p>
+                    <a href="@url_DealingHome">@SharedLocalizer.GetLocalizedHtmlString("GO_BACK")</a>
+                </p>
+                <p>
+                    <a href="@url_ForgotPassword" target="_blank">@SharedLocalizer.GetLocalizedHtmlString("Forgot_your_password")</a>
+                </p>
+                <p>
+                    <a href="@url_Register" target="_blank">@SharedLocalizer.GetLocalizedHtmlString("Register_as_a_new_user")</a>
+                </p>*@
+
+
+            </form>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+
+
+@if ((bool)ViewData["IsInternalRequest"])
+{
+   
+
+    <script type="text/javascript">
+        //PW: called by submit buttom, invoke external Wpf C# code.
+        if (typeof CefSharp !== "undefined") 
+            CefSharp.BindObjectAsync("callbackObjectForJs");        
+
+        function saveLoginFieldsInWpf() {
+            var email = document.getElementById("txtEmail");
+            //if (email) alert(email.value);
+
+            var password = document.getElementById("txtPassword");
+            //if (password) alert(password.value);
+
+            if (email && password) {
+                if (typeof callbackObjectForJs !== "undefined") 
+                    callbackObjectForJs.saveCredential(email.value, password.value); //PW: method name msut be CamelCase 
+            }
+        }
+
+        //PW: called by external Wpf C# code, set email and password values.
+        var setLoginFieldsInBrowser = function (email, password) {
+            document.getElementById("txtEmail").value = email;
+            document.getElementById("txtPassword").value = password;
+        };
+
+        //PW: go back or close Inactive tab.
+        window.addEventListener('blur', goBackOrClose);
+        function goBackOrClose() {
+            setTimeout(function () {
+                //PW: Call history.back() and then window.close().
+                window.history.back();  //PW: If the browser is able to go back in history it won't be able to get to the next statement. If it's not able to go back, it'll close the window.
+                window.close();         //PW: Note: only javascript-created tab can be closed by Javascript.
+            }, 30000);            
+        }
+
+    </script>
+}

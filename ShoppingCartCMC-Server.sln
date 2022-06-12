@@ -11,7 +11,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingCartCMC.Shared", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingCartCMC.STS", "ShoppingCartCMC.STS\ShoppingCartCMC.STS.csproj", "{24797A39-6E6E-44F4-A975-A6279C4ADFBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingCartCMC.Test", "ShoppingCartCMC.Test\ShoppingCartCMC.Test.csproj", "{14426674-8ACD-4958-84CA-778B7239E1EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingCartCMC.Test", "ShoppingCartCMC.Test\ShoppingCartCMC.Test.csproj", "{14426674-8ACD-4958-84CA-778B7239E1EA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_ThirdPartyDLL", "_ThirdPartyDLL", "{C7B6BB8D-7554-4240-AD70-A06C27F5F6D8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceStack 5.7.0", "ServiceStack 5.7.0", "{8E9DDF72-23E5-415B-A31B-4F5F7A30BDFA}"
+	ProjectSection(SolutionItems) = preProject
+		_ThirdPartyDLL\ServiceStack 5.7.0\ServiceStack.Client.dll = _ThirdPartyDLL\ServiceStack 5.7.0\ServiceStack.Client.dll
+		_ThirdPartyDLL\ServiceStack 5.7.0\ServiceStack.Common.dll = _ThirdPartyDLL\ServiceStack 5.7.0\ServiceStack.Common.dll
+		_ThirdPartyDLL\ServiceStack 5.7.0\ServiceStack.dll = _ThirdPartyDLL\ServiceStack 5.7.0\ServiceStack.dll
+		_ThirdPartyDLL\ServiceStack 5.7.0\ServiceStack.Interfaces.dll = _ThirdPartyDLL\ServiceStack 5.7.0\ServiceStack.Interfaces.dll
+		_ThirdPartyDLL\ServiceStack 5.7.0\ServiceStack.Redis.dll = _ThirdPartyDLL\ServiceStack 5.7.0\ServiceStack.Redis.dll
+		_ThirdPartyDLL\ServiceStack 5.7.0\ServiceStack.Text.dll = _ThirdPartyDLL\ServiceStack 5.7.0\ServiceStack.Text.dll
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +54,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8E9DDF72-23E5-415B-A31B-4F5F7A30BDFA} = {C7B6BB8D-7554-4240-AD70-A06C27F5F6D8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {978DF7BD-2B85-4A4F-9482-F740A8393996}

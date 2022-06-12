@@ -7,9 +7,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
 using ShoppingCartCMC.Server.Shared.Billing;
+using ShoppingCartCMC.Server.Shared.DB.Trading;
 using ShoppingCartCMC.Server.Shared.MarketData;
 using ShoppingCartCMC.Server.Shared.Product;
 using ShoppingCartCMC.Server.Shared.Shipping;
@@ -17,6 +19,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ShoppingCartCMC.Server.Shared.DB.Identity;
+using Microsoft.IdentityModel.Tokens;
+using ShoppingCartCMC.Shared.Common;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Primitives;
 
 namespace ShoppingCartCMC.WebApi
 {
@@ -25,7 +35,7 @@ namespace ShoppingCartCMC.WebApi
 
         public IConfiguration Configuration { get; }
         private IWebHostEnvironment _env { get; set; }
-
+ 
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
@@ -67,13 +77,25 @@ namespace ShoppingCartCMC.WebApi
             });
             
             //PW: add controller
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
 
             //PW: add Swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ShoppingCartCMC.WebApi", Version = "v1" });
             });
+
+
+           
+            //PW: add Database context
+            services.AddDbContext<ShoppingCartCmcTradingContext>((serviceProvider, options) =>
+                    options.UseSqlServer(Configuration.GetConnectionString("ShoppingCartCmcTradingConnection"))
+             );
+
+
+            services.AddDbContext<ShoppingCartCmcIdentityContext>((serviceProvider, options) =>
+                    options.UseSqlServer(Configuration.GetConnectionString("ShoppingCartCmcIdentityConnection"))
+             );
 
 
 
@@ -104,62 +126,50 @@ namespace ShoppingCartCMC.WebApi
                 /*****************************/
             }));
 
-            /** **********************************************************
-            * Patrick: [todo in future].
-            * PW: add DB context here for further development.
-            * ************************************************************
-            */
-            //services.AddDbContext<CMC_DB_Context>((serviceProvider, options) =>
-            //        options.UseSqlServer(Configuration.GetConnectionString("CMC_DB_Connection"))
-            // );
 
+            //PW: below is authentication related settings
+            var tokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidIssuer = Configuration.GetValue<string>("IdentityServer.TokenValidIssuer"),
+                ValidAudience = StsSetting.ApiResourceName,  //"ShoppingCartCMC.WebApi",
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(StsSetting.ApiResourceSecrets)),
+                NameClaimType = "name",
+                RoleClaimType = "role",
+            };
 
+            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler
+            {
+                InboundClaimTypeMap = new Dictionary<string, string>()
+            };
 
-            /** **********************************************************
-            * Patrick: [todo in future].
-            * PW: below is authentication related settings
-            * ************************************************************
-            */
-            //var tokenValidationParameters = new TokenValidationParameters()
-            //{
-            //    ValidIssuer = Configuration.GetValue<string>("IdentityServer.TokenValidIssuer"),
-            //    ValidAudience = StsSetting.ApiResourceName_GuruTraderNetCoreSignalR,  //"GuruTrader.NetCoreSignalR",
-            //    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(StsSetting.ApiResourceSecrets_GuruTraderNetCoreSignalR)),
-            //    NameClaimType = "name",
-            //    RoleClaimType = "role",
-            //};
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.Authority = Configuration.GetValue<string>("IdentityServer.JwtBearerOptions.Authority");
+                options.Audience = StsSetting.ApiResourceName; // "ShoppingCartCMC.WebApi";
+                options.IncludeErrorDetails = true;
+                options.SaveToken = true;
+                options.SecurityTokenValidators.Clear();
+                options.SecurityTokenValidators.Add(jwtSecurityTokenHandler);
+                options.TokenValidationParameters = tokenValidationParameters;
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        if (context.Request.Path.Value.StartsWith("/api/billing") && context.Request.Query.TryGetValue("token", out StringValues token) )
+                        {
+                            context.Token = token;
+                        }
 
-            //var jwtSecurityTokenHandler = new JwtSecurityTokenHandler
-            //{
-            //    InboundClaimTypeMap = new Dictionary<string, string>()
-            //};
-
-            //services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-            //.AddJwtBearer(options =>
-            //{
-            //    options.Authority = Configuration.GetValue<string>("IdentityServer.JwtBearerOptions.Authority");
-            //    options.Audience = StsSetting.ApiResourceName_GuruTraderNetCoreSignalR; // "GuruTrader.NetCoreSignalR";
-            //    options.IncludeErrorDetails = true;
-            //    options.SaveToken = true;
-            //    options.SecurityTokenValidators.Clear();
-            //    options.SecurityTokenValidators.Add(jwtSecurityTokenHandler);
-            //    options.TokenValidationParameters = tokenValidationParameters;
-            //    options.Events = new JwtBearerEvents
-            //    {                    
-            //    };
-            //});
-
-            //services.AddAuthorization(options =>
-            //{
-            //    #region add authorization policies
-
-            //    //staff
-            //    options.AddPolicy(AuthorizationPolicyConstants.Staff, policyAdmin => policyAdmin.RequireClaim(ClaimTypeConstants.IsStaff, "true"));
-            //    //Api scope
-            //    options.AddPolicy(AuthorizationPolicyConstants.NetCoreSignalrApi, policyAdmin => policyAdmin.RequireClaim("scope", StsSetting.ApiResourceName_GuruTraderNetCoreSignalR));
-
-            //    #endregion
-            //});
+                        return Task.CompletedTask;
+                    },
+                    OnAuthenticationFailed = context =>
+                    {
+                        var te = context.Exception;
+                        return Task.CompletedTask;
+                    }
+                };
+            });
 
         }
 

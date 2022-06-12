@@ -1,0 +1,31 @@
+﻿@using Microsoft.Extensions.Configuration
+@model  ShoppingCartCMC.STS.Models.AccountViewModels.LoggedOutViewModel
+@inject IConfiguration Config
+
+@{
+    string url_DealingHome = Config.GetValue<string>("AppSetting:Url_DealingHome");
+}
+
+<div class="page-header">
+    <h1>
+        Logout
+        <small>You are now logged out</small>
+    </h1>
+
+    @if (Model.PostLogoutRedirectUri != null)
+    {
+        <div>
+            Click <a href="@Model.PostLogoutRedirectUri">here</a> to return to the
+            <span>@Model.ClientName</span> application.
+        </div>
+    }
+
+    @if (Model.SignOutIframeUrl != null)
+    {
+        <iframe style="display:none" width="0" height="0" class="signout" src="@Model.SignOutIframeUrl"></iframe>
+    }
+</div>
+
+<p>
+    <a href="@url_DealingHome">Go back</a>
+</p>

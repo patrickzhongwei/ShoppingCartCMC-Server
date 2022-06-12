@@ -1,0 +1,27 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Config
+
+@{
+    string url_DealingHome = Config.GetValue<string>("AppSetting:Url_DealingHome");
+}
+
+@{
+    ViewData["Title"] = "Server Error";
+}
+
+<h4>@ViewData["Title"]</h4>
+<div class="alert alert-warning" role="alert">
+    <p>
+        <span class="glyphicon glyphicon-warning-sign"></span>
+        <strong>Dear Customer,</strong>
+    </p>
+    <p>
+        Sorry! We can't seem to handle your request at moment. Please try later, or contact our help desk if the problem still persists.
+    </p>
+</div>
+<div>
+    <p>
+        <a href="@url_DealingHome">Go back</a>
+    </p>
+</div>
+

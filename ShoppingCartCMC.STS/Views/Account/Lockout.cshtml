@@ -1,0 +1,20 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Config
+
+@{
+    string url_DealingHome = Config.GetValue<string>("AppSetting:Url_DealingHome");
+}
+
+@{
+    ViewData["Title"] = "Locked out";
+}
+
+<header>
+    <h1 class="text-danger">Locked out.</h1>
+    <p class="text-danger">This account has been locked out, please try again later.</p>
+</header>
+
+<p>
+    <a href="@url_DealingHome">Go back</a>
+</p>
+
