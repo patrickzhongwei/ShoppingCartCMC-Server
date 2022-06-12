@@ -13,6 +13,7 @@ namespace ShoppingCartCMC.Server.Shared.DB.Trading
         public string Category { get; set; }
         public decimal? Price { get; set; }
         public string Description { get; set; }
+        public string ImageUrl { get; set; }
         public int? TimeTickAdded { get; set; }
         public int? Quantity { get; set; }
         public decimal? Rating { get; set; }

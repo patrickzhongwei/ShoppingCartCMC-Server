@@ -7,6 +7,7 @@ namespace ShoppingCartCMC.Server.Shared.DB.Trading
 {
     public partial class Billing
     {
+        public int Id { get; set; }
         public string Key { get; set; }
         public decimal? Subtotal { get; set; }
         public decimal? ShippingFee { get; set; }
@@ -18,6 +19,6 @@ namespace ShoppingCartCMC.Server.Shared.DB.Trading
         public string Address2 { get; set; }
         public string Country { get; set; }
         public string State { get; set; }
-        public int? Zip { get; set; }
+        public string Zip { get; set; }
     }
 }

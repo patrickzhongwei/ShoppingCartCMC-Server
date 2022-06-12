@@ -36,13 +36,9 @@ namespace ShoppingCartCMC.Server.Shared.DB.Trading
 
             modelBuilder.Entity<Billing>(entity =>
             {
-                entity.HasKey(e => e.Key);
-
                 entity.ToTable("Billing");
 
-                entity.Property(e => e.Key)
-                    .HasMaxLength(50)
-                    .IsFixedLength(true);
+                entity.HasIndex(e => e.Key, "IX_Billing");
 
                 entity.Property(e => e.Address1).HasMaxLength(500);
 
@@ -54,6 +50,11 @@ namespace ShoppingCartCMC.Server.Shared.DB.Trading
 
                 entity.Property(e => e.FirstName).HasMaxLength(50);
 
+                entity.Property(e => e.Key)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsFixedLength(true);
+
                 entity.Property(e => e.LastName).HasMaxLength(50);
 
                 entity.Property(e => e.ShippingFee).HasColumnType("decimal(18, 2)");
@@ -63,6 +64,8 @@ namespace ShoppingCartCMC.Server.Shared.DB.Trading
                 entity.Property(e => e.Subtotal).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.Total).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.Zip).HasMaxLength(50);
             });
 
             modelBuilder.Entity<BillingProduct>(entity =>
@@ -99,6 +102,8 @@ namespace ShoppingCartCMC.Server.Shared.DB.Trading
                 entity.Property(e => e.Description)
                     .HasMaxLength(2000)
                     .IsFixedLength(true);
+
+                entity.Property(e => e.ImageUrl).HasMaxLength(500);
 
                 entity.Property(e => e.Name).HasMaxLength(250);
 

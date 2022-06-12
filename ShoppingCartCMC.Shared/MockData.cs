@@ -15,7 +15,7 @@ namespace ShoppingCartCMC.Shared
         { 
             get
             {
-                string a = @"a";
+               
                 List<iProduct> products = new List<iProduct>();
                 products.AddRange(
                     new Product[]
