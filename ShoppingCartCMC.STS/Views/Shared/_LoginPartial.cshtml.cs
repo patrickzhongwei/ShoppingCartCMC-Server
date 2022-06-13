@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace GuruTrader.StsServer.Views.Shared
+namespace ShoppingCartCMC.STS.Views.Shared
 {
     public class _LoginPartialModel : PageModel
     {

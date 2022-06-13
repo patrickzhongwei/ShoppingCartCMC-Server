@@ -18,7 +18,7 @@ namespace ShoppingCartCMC.STS
         {
             TimeZoneInfo tzinfo = TimeZoneInfo.Local;
 
-            //PW: Hosting server timezone must match to GuruTrader timezone!!
+           
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json");

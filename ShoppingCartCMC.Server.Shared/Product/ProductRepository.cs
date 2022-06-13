@@ -43,7 +43,7 @@ namespace ShoppingCartCMC.Server.Shared.Product
             try
             {
                 List<iProduct> productsInCcy = new List<iProduct>();
-                var productsDb = _tradingContext.Products.Where(p => p.Currency == ccyCode).ToList();
+                var productsDb = _tradingContext.Products.Where(p => true).ToList(); //PW: db only contain AUD product
 
                 productsDb.ForEach(async p =>
                 {
@@ -140,7 +140,7 @@ namespace ShoppingCartCMC.Server.Shared.Product
         {
             try
             {
-                var productDb = _tradingContext.Products.First(p => p.Key == key && p.Currency == ccyCode);
+                var productDb = _tradingContext.Products.First(p => p.Key == key); //PW: db only contain AUD product
                 ShoppingCartCMC.Shared.Product product;
 
                 if (productDb != null)

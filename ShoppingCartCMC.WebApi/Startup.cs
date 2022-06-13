@@ -27,6 +27,11 @@ using System.IdentityModel.Tokens.Jwt;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Primitives;
+using ShoppingCartCMC.Server.Shared.Pricing;
+using ShoppingCartCMC.WebApi.SignalrHubs.Pricing;
+using ServiceStack.Redis;
+using ShoppingCartCMC.Server.Shared.ReferenceData;
+using ShoppingCartCMC.WebApi.SignalrHubs.Transport;
 
 namespace ShoppingCartCMC.WebApi
 {
@@ -66,7 +71,26 @@ namespace ShoppingCartCMC.WebApi
             services.AddScoped<iBillingRepository, BillingRepository>();
             services.AddScoped<iForexEngineRepository, ForexEngineRepository>();
             services.AddScoped<iProductRepository, ProductRepository>();
-            services.AddScoped<iShippingRepository, ShippingRepository>();  
+            services.AddScoped<iShippingRepository, ShippingRepository>();
+
+            // pricing
+            services.AddSingleton<IPricePublisher, PricePublisher>();
+            services.AddSingleton<IPriceFeed, PriceFeedSimulator>();  
+            services.AddSingleton<IPriceLastValueCache, PriceLastValueCache>();
+
+            // reference data
+            services.AddSingleton<ICurrencyPairRepository, CurrencyPairRepository>();
+
+
+            ////PW: Redis client
+            //string redisHost = Configuration.GetSection("Redis-Host").Value;
+            //if (redisHost == null || redisHost == string.Empty) redisHost = "localhost";
+            //services.AddSingleton<IRedisClientsManager>(c => new RedisManagerPool(redisHost));
+
+            //inflastructure
+            services.AddSingleton<IContextHolder, ContextHolder>(); //PW: must be singleton, otherwise cient-side timeout.
+
+
 
             //PW: add logging
             services.AddLogging(loggingBuilder =>
@@ -79,10 +103,13 @@ namespace ShoppingCartCMC.WebApi
             //PW: add controller
             services.AddControllers().AddNewtonsoftJson();
 
+            services.AddSignalR().AddNewtonsoftJsonProtocol();
+
             //PW: add Swagger
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(option =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ShoppingCartCMC.WebApi", Version = "v1" });
+                option.SwaggerDoc("v1", new OpenApiInfo { Title = "ShoppingCartCMC.WebApi", Version = "v1" });
+                option.AddSignalRSwaggerGen(); //PW: still not wokring.
             });
 
 
@@ -125,51 +152,55 @@ namespace ShoppingCartCMC.WebApi
                        .AllowAnyHeader();
                 /*****************************/
             }));
+           
 
 
-            //PW: below is authentication related settings
-            var tokenValidationParameters = new TokenValidationParameters()
-            {
-                ValidIssuer = Configuration.GetValue<string>("IdentityServer.TokenValidIssuer"),
-                ValidAudience = StsSetting.ApiResourceName,  //"ShoppingCartCMC.WebApi",
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(StsSetting.ApiResourceSecrets)),
-                NameClaimType = "name",
-                RoleClaimType = "role",
-            };
+            //PW: below is authentication related settings, comment line at dev environment
+            //**************************************************************************************************
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            //var tokenValidationParameters = new TokenValidationParameters()
+            //{
+            //    ValidIssuer = Configuration.GetValue<string>("IdentityServer.TokenValidIssuer"),
+            //    ValidAudience = StsSetting.ApiResourceName,  //"ShoppingCartCMC.WebApi",
+            //    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(StsSetting.ApiResourceSecrets)),
+            //    NameClaimType = "name",
+            //    RoleClaimType = "role",
+            //};
 
-            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler
-            {
-                InboundClaimTypeMap = new Dictionary<string, string>()
-            };
+            //var jwtSecurityTokenHandler = new JwtSecurityTokenHandler
+            //{
+            //    InboundClaimTypeMap = new Dictionary<string, string>()
+            //};
 
-            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.Authority = Configuration.GetValue<string>("IdentityServer.JwtBearerOptions.Authority");
-                options.Audience = StsSetting.ApiResourceName; // "ShoppingCartCMC.WebApi";
-                options.IncludeErrorDetails = true;
-                options.SaveToken = true;
-                options.SecurityTokenValidators.Clear();
-                options.SecurityTokenValidators.Add(jwtSecurityTokenHandler);
-                options.TokenValidationParameters = tokenValidationParameters;
-                options.Events = new JwtBearerEvents
-                {
-                    OnMessageReceived = context =>
-                    {
-                        if (context.Request.Path.Value.StartsWith("/api/billing") && context.Request.Query.TryGetValue("token", out StringValues token) )
-                        {
-                            context.Token = token;
-                        }
+            //services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+            //.AddJwtBearer(options =>
+            //{
+            //    options.Authority = Configuration.GetValue<string>("IdentityServer.JwtBearerOptions.Authority");
+            //    options.Audience = StsSetting.ApiResourceName; // "ShoppingCartCMC.WebApi";
+            //    options.IncludeErrorDetails = true;
+            //    options.SaveToken = true;
+            //    options.SecurityTokenValidators.Clear();
+            //    options.SecurityTokenValidators.Add(jwtSecurityTokenHandler);
+            //    options.TokenValidationParameters = tokenValidationParameters;
+            //    options.Events = new JwtBearerEvents
+            //    {
+            //        OnMessageReceived = context =>
+            //        {
+            //            if (context.Request.Path.Value.StartsWith("/api/billing") && context.Request.Query.TryGetValue("token", out StringValues token) )
+            //            {
+            //                context.Token = token;
+            //            }
 
-                        return Task.CompletedTask;
-                    },
-                    OnAuthenticationFailed = context =>
-                    {
-                        var te = context.Exception;
-                        return Task.CompletedTask;
-                    }
-                };
-            });
+            //            return Task.CompletedTask;
+            //        },
+            //        OnAuthenticationFailed = context =>
+            //        {
+            //            var te = context.Exception;
+            //            return Task.CompletedTask;
+            //        }
+            //    };
+            //});
+            //-------------------------------------------------------------------------------------------
 
         }
 
@@ -178,7 +209,6 @@ namespace ShoppingCartCMC.WebApi
         {
             app.UseCors("MyCorsPolicy");
             app.UseAuthentication();
-            app.UseAuthorization();
 
             if (env.IsDevelopment())
             {
@@ -196,6 +226,8 @@ namespace ShoppingCartCMC.WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                
+                endpoints.MapHub<PricingHub>("/signalrPricing");
             });
         }
     }
