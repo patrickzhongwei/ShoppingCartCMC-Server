@@ -99,9 +99,21 @@ namespace ShoppingCartCMC.WebApi
                 loggingBuilder.AddDebug();
                 loggingBuilder.AddSerilog();
             });
-            
+
             //PW: add controller
-            services.AddControllers().AddNewtonsoftJson();
+            /*
+            * Patrick: this is for Newtonsoft to serialize             * 
+            */
+            //services.AddControllers().AddNewtonsoftJson();
+
+            /*
+             * Patrick: this is for System.Text.Json to serialize             * 
+             */
+            services.AddControllers().AddJsonOptions(option =>
+            {
+                //PW: must set to 'true', as Angular property nameing is Camel-case while c# is Pascal-case.
+                //option.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+            });
 
             services.AddSignalR().AddNewtonsoftJsonProtocol();
 

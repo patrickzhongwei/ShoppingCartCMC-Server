@@ -39,16 +39,28 @@ namespace ShoppingCartCMC.WebApi.Controllers
         [HttpGet()]
         public async Task<string> Get(string key, string ccyCode = "AUD")
         {
+            /*
+             * Patrick: this is for Newtonsoft to serialize             * 
+             */
+            //var product = await _productRepository.Get(key, ccyCode);
+
+            //string jsonString = JsonConvert.SerializeObject(
+            //product,
+            //Formatting.None,
+            //new JsonSerializerSettings()
+            //{
+            //    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            //});
+
+            //return jsonString;
+
+
+            /*
+             * Patrick: this is for System.Text.Json to serialize             * 
+             */
             var product = await _productRepository.Get(key, ccyCode);
 
-            string jsonString = JsonConvert.SerializeObject(
-            product,
-            Formatting.None,
-            new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            });
-
+            string jsonString = System.Text.Json.JsonSerializer.Serialize((object)product); //PW: must cast from interface to object[] here, otherwise only interface's property names are picked in serialization.
             return jsonString;
         }
     }
