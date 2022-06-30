@@ -111,21 +111,22 @@ namespace ShoppingCartCMC.WebApi
              */
             services.AddControllers().AddJsonOptions(option =>
             {
-                //PW: must set to 'true', as Angular property nameing is Camel-case while c# is Pascal-case.
+                //PW: below should set to 'true', as Angular property nameing is Camel-case while c# is Pascal-case.However, as Dto properties are minified into single character, it doesn't matter.
                 //option.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
             });
 
-            services.AddSignalR().AddNewtonsoftJsonProtocol();
+
+            services.AddSignalR(); //.AddNewtonsoftJsonProtocol(); //PW: not used
 
             //PW: add Swagger
             services.AddSwaggerGen(option =>
             {
                 option.SwaggerDoc("v1", new OpenApiInfo { Title = "ShoppingCartCMC.WebApi", Version = "v1" });
-                option.AddSignalRSwaggerGen(); //PW: still not wokring.
+                option.AddSignalRSwaggerGen(); 
             });
 
 
-           
+
             //PW: add Database context
             services.AddDbContext<ShoppingCartCmcTradingContext>((serviceProvider, options) =>
                     options.UseSqlServer(Configuration.GetConnectionString("ShoppingCartCmcTradingConnection"))
@@ -159,9 +160,12 @@ namespace ShoppingCartCMC.WebApi
                 /* development setting */
                 //*************************** */
                 builder
-                       .AllowAnyOrigin()
+                       .WithOrigins(new string[] { "http://localhost:4200/" })
+                       //.AllowAnyOrigin()
                        .AllowAnyMethod()
-                       .AllowAnyHeader();
+                       .AllowAnyHeader()
+                       .AllowCredentials()
+                       ;
                 /*****************************/
             }));
            
@@ -220,7 +224,9 @@ namespace ShoppingCartCMC.WebApi
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors("MyCorsPolicy");
+            app.UseRouting();
             app.UseAuthentication();
+            app.UseAuthorization();
 
             if (env.IsDevelopment())
             {
@@ -229,11 +235,7 @@ namespace ShoppingCartCMC.WebApi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ShoppingCartCMC.WebApi v1"));
             }
 
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
+            app.UseHttpsRedirection();   
 
             app.UseEndpoints(endpoints =>
             {
