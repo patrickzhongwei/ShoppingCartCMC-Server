@@ -116,7 +116,7 @@ namespace ShoppingCartCMC.WebApi
             });
 
 
-            services.AddSignalR(); //.AddNewtonsoftJsonProtocol(); //PW: not used
+            services.AddSignalR(); 
 
             //PW: add Swagger
             services.AddSwaggerGen(option =>
@@ -160,13 +160,17 @@ namespace ShoppingCartCMC.WebApi
                 /* development setting */
                 //*************************** */
                 builder
-                       .WithOrigins(new string[] { "http://localhost:4200/" })
+                       /* **************************************************************************************************
+                        * PW: WithOrigins parameters must not have ending-slash like "http://localhost:4200/" and it must set "/.AllowCredentials()" as below
+                        * or javaScript client cannot estabish hub connection unless set skipNegotiation to true and transport 
+                        * to signalR.HttpTransportType.WebSockets.                        
+                        * **************************************************************************************************/
+                       .WithOrigins(new string[] { "http://localhost:4200" }) //!!
                        //.AllowAnyOrigin()
                        .AllowAnyMethod()
                        .AllowAnyHeader()
-                       .AllowCredentials()
+                       .AllowCredentials() //!!
                        ;
-                /*****************************/
             }));
            
 
@@ -232,7 +236,7 @@ namespace ShoppingCartCMC.WebApi
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ShoppingCartCMC.WebApi v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ShoppingCartCMC.WebApi v1"));                
             }
 
             app.UseHttpsRedirection();   

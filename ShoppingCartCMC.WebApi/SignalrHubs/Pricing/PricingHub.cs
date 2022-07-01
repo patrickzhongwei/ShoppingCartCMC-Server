@@ -20,6 +20,7 @@ namespace ShoppingCartCMC.WebApi.SignalrHubs.Pricing
 {
     //[Authorize(AuthenticationSchemes = "Bearer")]
     //[Authorize(Policy = "CmcSignalrApi_Policy")]
+    [SignalRHub] //PW: Swagger for SignalR is not useless, as it generates Http post not working. 
     public class PricingHub : Hub
     {        
         private readonly IContextHolder _contextHolder;
